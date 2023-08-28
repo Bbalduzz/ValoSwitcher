@@ -4,11 +4,19 @@ import win32api, win32con, win32gui
 import win32com.client
 import time
 import psutil
+import configparser
 
 class RiotAutoLogin:
     def __init__(self, user, pwd):
         self.username = user
         self.password = pwd
+        self.config = self._load_config()
+        self.RIOTCLIENT_PATH = self.config['SETTINGS']['RIOTCLIENT_PATH']
+    
+    def _load_config(self):
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+        return config
     
     def _wait_for_window(self, window_title):
         while True:
@@ -23,8 +31,7 @@ class RiotAutoLogin:
 
     def _send_login_keys(self):
         print(f'[{datetime.now().strftime("%H:%M:%S")}] Game launched')
-        RIOTCLIENT_PATH = r'D:\Riot Games\Riot Client\RiotClientServices.exe'
-        subprocess.Popen(RIOTCLIENT_PATH)
+        subprocess.Popen(self.RIOTCLIENT_PATH)
         print(f'[{datetime.now().strftime("%H:%M:%S")}] Riot Client started')#
 
         self._wait_for_window("Riot Client Main")
@@ -55,7 +62,6 @@ from PyQt6.QtGui import QIcon, QPalette, QColor, QPixmap, QBrush
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QLabel, QSpacerItem, QSizePolicy, QDialog, QLineEdit, QPushButton
 from qfluentwidgets import (setTheme, Theme, CardWidget, BodyLabel, SplashScreen, LineEdit, PushButton, ToolButton, FluentIcon, IconWidget)
 from qframelesswindow import FramelessWindow
-import configparser
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -74,12 +80,13 @@ def parse_config_and_create_cards(file_path, parent_widget):
     cards = []
 
     for section in config.sections():
-        riot_username = config[section]['riot_username']
-        pwd = config[section]['password']
-        card = CredentialCard(FluentIcon.PEOPLE, riot_username, pwd, section, parent_widget)
-        card.removed.connect(parent_widget.remove_from_config)  # Connect the signal
-        cards.append(card)
-
+        # Ensure the section has the expected keys
+        if 'riot_username' in config[section]:
+            riot_username = config[section]['riot_username']
+            card = CredentialCard(FluentIcon.PEOPLE, riot_username, section, parent_widget)
+            card.removed.connect(parent_widget.remove_from_config)  # Connect the signal
+            cards.append(card)
+        else: pass
     return cards
 
 class CredentialCard(CardWidget):
