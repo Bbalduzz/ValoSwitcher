@@ -4,6 +4,9 @@ Valorant (Riot) account switcher made in python and distributed as an executable
 
 ### How to use
 - change the RIOTCLIENT_PATH in config.ini to your riotclient's path
+### How to compile
+- `py -m PyInstaller --windowed --onefile main.py`
+- copy the assets folder and the config.ini in the newly created `dist` folder
 
 ### Demo
 https://github.com/Bbalduzz/ValoSwitcher/assets/81587335/1cf548b2-18de-4fc8-a6f5-c4e4ce818c84
