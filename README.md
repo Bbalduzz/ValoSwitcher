@@ -33,8 +33,8 @@
    2. or add them though ValoSwitch clicking "Add Account"
    
 ### How to compile
-- `py -m PyInstaller --windowed --onefile main.py`
-- copy the assets folder and the config.ini in the newly created `dist` folder
+- `python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-data-dir=assets=assets main.py`
+- copy the config.ini in the newly created `main.dist` folder
 
 ### Demo
 https://github.com/Bbalduzz/ValoSwitcher/assets/81587335/066a6350-b045-45e4-bd9b-5d1ac75dd417
